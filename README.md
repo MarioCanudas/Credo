@@ -1,6 +1,5 @@
-# Credo - Credit Score API
-
 <div align="center">
+# Credo - Credit Score API
 
 **A FastAPI-based Credit Score Prediction API powered by TensorFlow Machine Learning Models**
 
