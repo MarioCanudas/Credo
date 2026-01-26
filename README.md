@@ -1,9 +1,9 @@
 <div align="center">
-	<h1>Credo - Credit Score API</h1>
+<h1>Credo - Credit Score API</h1>
 
-	<p><strong>A FastAPI-based Credit Score Prediction API powered by TensorFlow Machine Learning Models</strong></p>
+**A FastAPI-based Credit Score Prediction API powered by TensorFlow Machine Learning Models**
 
-	<p>[Features](#features) • [Quick Start](#quick-start) • [Roadmap](#roadmap) • [Contributing](#contributing)</p>
+[Features](#features) • [Quick Start](#quick-start) • [Roadmap](#roadmap) • [Contributing](#contributing)
 </div>
 
 ---
