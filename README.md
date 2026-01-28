@@ -3,25 +3,25 @@
 
 **A FastAPI-based Credit Score Prediction API powered by TensorFlow Machine Learning Models**
 
-[Features](#features) • [Quick Start](#quick-start) • [Roadmap](#roadmap) • [Contributing](#contributing)
+[Features](#features) • [Quick Start](#quick-start) • [Roadmap](#roadmap) 
 </div>
 
 ---
 
-## 📋 Overview
+## Overview
 
 Credo is a modern, scalable Credit Score API designed specifically for Fintech applications. It leverages machine learning models built with TensorFlow to predict credit scores based on financial history and application data. The API is built with FastAPI, providing high performance, automatic documentation, and easy integration.
 
 ### Key Highlights
-- ⚡ **High Performance** - Built on FastAPI for lightning-fast inference
-- 🤖 **ML-Powered** - TensorFlow models for accurate credit predictions
-- 📊 **Easy Integration** - RESTful API with automatic Swagger/OpenAPI documentation
-- 🔒 **Production-Ready** - Designed with Fintech requirements in mind
-- 📈 **Scalable** - Ready for deployment in cloud environments
+- **High Performance** - Built on FastAPI for lightning-fast inference
+- **ML-Powered** - TensorFlow models for accurate credit predictions
+- **Easy Integration** - RESTful API with automatic Swagger/OpenAPI documentation
+- **Production-Ready** - Designed with Fintech requirements in mind
+- **Scalable** - Ready for deployment in cloud environments
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend Framework**: [FastAPI](https://fastapi.tiangolo.com/)
 - **ML Framework**: [TensorFlow](https://www.tensorflow.org/)
@@ -31,7 +31,7 @@ Credo is a modern, scalable Credit Score API designed specifically for Fintech a
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 ### Prerequisites
 - Python 3.9 or higher
@@ -60,7 +60,7 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 This project uses the following tools to maintain code quality:
 
 - **[Ruff](https://docs.astral.sh/ruff/)** - Fast Python linter and formatter
-- **[Pyright](https://github.com/microsoft/pyright)** - Static type checker for Python
+- **[basedpyright](https://docs.basedpyright.com/latest/)** - Static type checker for Python
 
 Run the following commands to check and format your code:
 
@@ -72,7 +72,7 @@ uv run ruff check .
 uv run ruff format .
 
 # Type checking
-uv run pyright
+uv run basedpyright
 ```
 
 ### Start the API
@@ -83,14 +83,13 @@ fastapi dev app/main.py
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 > 📝 This section will be added in future releases with example requests and API usage documentation.
 
 ---
 
-## 📊 Project Structure
-
+## Project Structure
 ```
 credo/
 ├── app/                          # FastAPI application
@@ -102,7 +101,6 @@ credo/
 │   └── schemas/                 # Pydantic models
 ├── ml_engine/                    # Machine Learning module
 │   └── training/
-│       ├── clean_data.ipynb    # Data preparation notebook
 │       └── data/               # Training datasets
 ├── requirements.txt
 ├── pyproject.toml
@@ -111,18 +109,19 @@ credo/
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 | Feature | Status | Priority | Notes |
 |---------|--------|----------|-------|
-| **Core API Setup** | 🔄 In Progress | 🔴 High | FastAPI project structure, routes configuration, and basic middleware setup |
-| **ML Model Integration & Prediction Endpoint** | ⏳ Planned | 🔴 High | Load TensorFlow models, implement `/predict` endpoint, handle model inference |
-| **Database Integration** | ⏳ Planned | 🔴 High | Set up database connection, create schema for predictions and user data |
-| **Authentication & Authorization** | ⏳ Planned | 🟡 Medium | Implement API key or OAuth2 authentication, role-based access control |
-| **Batch Prediction & Data Processing** | ⏳ Planned | 🟡 Medium | Support bulk prediction requests, data validation, and preprocessing pipelines |
-| **Comprehensive Testing** | ⏳ Planned | 🟡 Medium | Unit tests for endpoints, integration tests, ML model testing |
-| **Docker & Deployment** | ⏳ Planned | 🟡 Medium | Dockerize application, prepare deployment configurations, CI/CD setup |
-| **Monitoring & Performance Optimization** | ⏳ Planned | 🟢 Low | Add logging, metrics, performance tuning, and production monitoring |
+| **Initial Project Setup** | ✅ Completed | 🟢 Low Priority | Basic FastAPI structure with UV setup |
+| **Design Initial ML Model** | 🔄 In progress | 🔴 High Priority | Define features and architecture for the credit score model |
+| **Train Initial ML Model** | 🔄 In Progress | 🔴 High Priority | Develop and train the first TensorFlow model (using Keras) |
+| **Determine ScoreCard Schema** | ⏳ Planned | 🟡 Medium Priority | Define the data schema for credit score inputs/outputs |
+| **Implement API Endpoints** | ⏳ Planned | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
+| **Integrate ML Model with API** | ⏳ Planned | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
+| **Testing & Validation** | ⏳ Planned | 🟢 Low Priority | Implement unit and integration tests for API and ML model |
+| **Documentation & Examples** | ⏳ Planned | 🟡 Medium Priority | Create comprehensive documentation and usage examples |
+| **Other fancy features** | ⏳ Planned | 🟢 Low Priority | Additional features |
 
 **Status Legend:**
 - ✅ Completed
@@ -134,6 +133,6 @@ credo/
 
 ---
 
-## 📝 Usage Examples
+## Usage Examples
 
-(in future realeses)
+> 📝 This section will be added in future releases with example requests and API usage documentation.
