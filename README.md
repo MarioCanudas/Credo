@@ -100,9 +100,9 @@ credo/
 │   ├── db/                      # Database setup
 │   └── schemas/                 # Pydantic models
 ├── ml_engine/                    # Machine Learning module
+    ├── artifacts/               # Saved ML models
 │   └── training/
 │       └── data/               # Training datasets
-├── requirements.txt
 ├── pyproject.toml
 └── README.md
 ```
@@ -114,9 +114,9 @@ credo/
 | Feature | Status | Priority | Notes |
 |---------|--------|----------|-------|
 | **Initial Project Setup** | ✅ Completed | 🟢 Low Priority | Basic FastAPI structure with UV setup |
-| **Design Initial ML Model** | 🔄 In progress | 🔴 High Priority | Define features and architecture for the credit score model |
-| **Train Initial ML Model** | 🔄 In Progress | 🔴 High Priority | Develop and train the first TensorFlow model (using Keras) |
-| **Determine ScoreCard Schema** | ⏳ Planned | 🟡 Medium Priority | Define the data schema for credit score inputs/outputs |
+| **Design Initial ML Model** | ✅ Completed | 🔴 High Priority | Define features and architecture for the credit score model |
+| **Train Initial ML Model** | ✅ Completed | 🔴 High Priority | Develop and train the first TensorFlow model (using Keras) |
+| **Determine ScoreCard Schema** | 🔄 In progress | 🟡 Medium Priority | Define the data schema for credit score inputs/outputs |
 | **Implement API Endpoints** | ⏳ Planned | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
 | **Integrate ML Model with API** | ⏳ Planned | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
 | **Testing & Validation** | ⏳ Planned | 🟢 Low Priority | Implement unit and integration tests for API and ML model |
