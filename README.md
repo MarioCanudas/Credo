@@ -24,7 +24,6 @@ Credo is a modern, scalable Credit Score API designed specifically for Fintech a
 ## Tech Stack
 
 - **Backend Framework**: [FastAPI](https://fastapi.tiangolo.com/)
-- **ML Framework**: [TensorFlow](https://www.tensorflow.org/)
 - **Python Version**: 3.9+
 - **Database**: (To be specified)
 - **Deployment**: (To be specified)
