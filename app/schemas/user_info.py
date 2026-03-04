@@ -1,7 +1,9 @@
 from typing import Literal
 
 from enums import EducationType, FamStatus, Gender, HousingType, IncomeType, JobTitle
+from services import MLService
 from pydantic import BaseModel, field_validator
+import numpy as np
 
 
 class UserInfo(BaseModel):
@@ -24,7 +26,6 @@ class UserInfo(BaseModel):
     work_experience: int
     bad_debt: int
     good_debt: int
-    status: Literal[0, 1]
 
     @field_validator("income")
     def validate_income(cls, value: int) -> int:
@@ -55,3 +56,41 @@ class UserInfo(BaseModel):
         if value < 0:
             raise ValueError("Work experience must be non-negative")
         return value
+
+    @property
+    def ml_service(self) -> MLService:
+        return MLService()
+
+    @property
+    def categorical_info(self) -> list[str]:
+        return [
+            "gender",
+            "income_type",
+            "education_type",
+            "fam_status",
+            "housing_type",
+            "job_title",
+        ]
+
+    @property
+    def binary_info(self) -> list[str]:
+        return [
+            "car",
+            "realty",
+            "mobile_phone",
+            "work_phone",
+            "phone",
+            "email",
+        ]
+
+    @property
+    def numerical_info(self) -> list[str]:
+        return [
+            "cnt_children",
+            "income",
+            "cnt_fam_members",
+            "age",
+            "work_experience",
+            "bad_debt",
+            "good_debt",
+        ]
