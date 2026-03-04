@@ -115,9 +115,10 @@ credo/
 | **Initial Project Setup** | ✅ Completed | 🟢 Low Priority | Basic FastAPI structure with UV setup |
 | **Design Initial ML Model** | ✅ Completed | 🔴 High Priority | Define features and architecture for the credit score model |
 | **Train Initial ML Model** | ✅ Completed | 🔴 High Priority | Develop and train the first TensorFlow model (using Keras) |
-| **Determine ScoreCard Schema** | 🔄 In progress | 🟡 Medium Priority | Define the data schema for credit score inputs/outputs |
-| **Implement API Endpoints** | ⏳ Planned | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
-| **Integrate ML Model with API** | ⏳ Planned | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
+| **Determine ScoreCard Schema** | 🔀 Changed | 🟡 Medium Priority | Changed to more granular schema definition (see Determine Basic Schemas) |
+| **Determine Basic Schemas** | ✅ Completed | 🟡 Medium Priority | Define basic Pydantic schemas for applications and user info |
+| **Implement API Endpoints** | 🔄 In progress | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
+| **Integrate ML Model with API** | 🔄 In progress | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
 | **Testing & Validation** | ⏳ Planned | 🟢 Low Priority | Implement unit and integration tests for API and ML model |
 | **Documentation & Examples** | ⏳ Planned | 🟡 Medium Priority | Create comprehensive documentation and usage examples |
 | **Other fancy features** | ⏳ Planned | 🟢 Low Priority | Additional features |
@@ -126,9 +127,13 @@ credo/
 - ✅ Completed
 - ⏳ Planned
 - 🔄 In Progress
+- 🔀 Changed
+
+**Priority Legend:**
 - 🔴 High Priority
 - 🟡 Medium Priority
 - 🟢 Low Priority
+- 
 
 ---
 
