@@ -79,10 +79,10 @@ class DBConnectionService:
                         self._verify_table_columns(inspector, table)
                     )
 
-                for table, task in tasks.items():
-                    column_errors = task.result()
-                    if column_errors:
-                        table_errors[table] = column_errors
+            for table, task in tasks.items():
+                column_errors = task.result()
+                if column_errors:
+                    table_errors[table] = column_errors
 
         if table_errors:
             table_details: list[str] = []
