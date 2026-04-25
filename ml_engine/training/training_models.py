@@ -18,20 +18,25 @@ Recommended usage:
     uv run ml_engine/training/training_models.py
 """
 
+import pathlib
 import re
 
 import joblib
 import pandas as pd
 from imblearn.over_sampling import SMOTE
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from xgboost import XGBClassifier
 
-data = pd.read_csv("ml_engine/training/data/applications.csv")
+ML_ENGINE_PATH = pathlib.Path(__file__).parent.parent
+ARTIFACTS_PATH = ML_ENGINE_PATH / "artifacts"
+TRAINING_PATH = ML_ENGINE_PATH / "training"
+DATA_PATH = TRAINING_PATH / "data"
+
+
+data = pd.read_csv(DATA_PATH / "applications.csv")
 
 # Map dataset column names to the internal schema used by the project.
 renamed_columns = {
@@ -106,6 +111,12 @@ def delete_slash(text: str) -> str:
 for col in categorical_columns:
     data[col] = data[col].apply(lambda x: delete_slash(x) if isinstance(x, str) else x)
 
+train_data = data.sample(frac=0.8, random_state=3)
+test_data = data.drop(train_data.index)
+
+train_data.to_csv(DATA_PATH / "train.csv")
+test_data.to_csv(DATA_PATH / "test.csv")
+
 # Preprocessing pipeline:
 # - scale numeric columns,
 # - one-hot encode categorical columns,
@@ -119,62 +130,25 @@ preprocessor = ColumnTransformer(
 )
 
 # Split into features and target.
-X = data.drop(columns=[id_col, outcome_col])
-y = data[outcome_col].values
+X_train = train_data.drop(columns=[id_col, outcome_col])
+y_train = train_data[outcome_col].values
 
-# Create train/test split for evaluation.
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=3)
+X_test = test_data.drop(columns=[id_col, outcome_col])
+y_test = test_data[outcome_col].values
 
 # Fit and persist preprocessor so the same transformations can be reused.
 X__train = preprocessor.fit_transform(X_train)
 X_test = preprocessor.transform(X_test)
-joblib.dump(preprocessor, "ml_engine/artifacts/preprocessor.joblib")
+joblib.dump(preprocessor, ARTIFACTS_PATH / "preprocessor.joblib")
 
 # Rebalance classes in training data.
 smote = SMOTE(random_state=3)
 X_train_resampled, y_train_resampled = smote.fit_resample(X__train, y_train)  # type: ignore
 
-
-# Train Logistic Regression baseline classifier.
-log_classifier = LogisticRegression()
-# log_classifier.fit(X_train_resampled, y_train_resampled)
-# log_y_pred = log_classifier.predict(X_test)
-
-# Train Random Forest classifier.
-rf_classifier = RandomForestClassifier(
-    n_estimators=300, criterion="entropy", random_state=3
-)
-# rf_classifier.fit(X_train_resampled, y_train_resampled)
-# rf_y_pred = rf_classifier.predict(X_test)
-
 # Train XGBoost classifier.
 xgb_classifier = XGBClassifier(random_state=3)
 xgb_classifier.fit(X_train_resampled, y_train_resampled)
 xgb_y_pred = xgb_classifier.predict(X_test)
-
-# Evaluate Logistic Regression with CV and holdout metrics.
-# accuracy_log = cross_val_score(
-#    estimator=log_classifier, X=X_train_resampled, y=y_train_resampled, cv=10
-# )
-# print(
-#    "Logistic Regression CV Accuracy: %.2f%% +/- %.2f%%"
-#    % (accuracy_log.mean() * 100, accuracy_log.std() * 100)
-# )
-# print("Logistic Regression Accuracy:", accuracy_score(y_test, log_y_pred))
-# print(confusion_matrix(y_test, log_y_pred))
-# print("-" * 10)
-
-# Evaluate Random Forest with CV and holdout metrics.
-# accuracy_rf = cross_val_score(
-#    estimator=rf_classifier, X=X_train_resampled, y=y_train_resampled, cv=10
-# )
-# print(
-#    "Random Forest CV Accuracy: %.2f%% +/- %.2f%%"
-#    % (accuracy_rf.mean() * 100, accuracy_rf.std() * 100)
-# )
-# print("Random Forest Accuracy:", accuracy_score(y_test, rf_y_pred))
-# print(confusion_matrix(y_test, rf_y_pred))
-# print("-" * 10)
 
 # Evaluate XGBoost with CV and holdout metrics.
 accuracy_xgb = cross_val_score(
@@ -187,4 +161,4 @@ print(
 print("XGBoost Accuracy:", accuracy_score(y_test, xgb_y_pred))
 print(confusion_matrix(y_test, xgb_y_pred))
 
-xgb_classifier.save_model("ml_engine/artifacts/model_a01.json")
+xgb_classifier.save_model(ARTIFACTS_PATH / "model_a01.json")
