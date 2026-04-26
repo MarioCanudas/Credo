@@ -1,3 +1,4 @@
+from .application_values import ApplicationStatus
 from .user_info_values import (
     EducationType,
     FamStatus,
@@ -14,4 +15,5 @@ __all__ = [
     "FamStatus",
     "HousingType",
     "JobTitle",
+    "ApplicationStatus",
 ]
