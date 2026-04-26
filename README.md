@@ -14,7 +14,7 @@ Credo is a modern, scalable Credit Score API designed specifically for Fintech a
 
 ### Key Highlights
 - **High Performance** - Built on FastAPI for lightning-fast inference
-- **ML-Powered** - TensorFlow models for accurate credit predictions
+- **ML-Powered** - ML models for accurate credit predictions
 - **Easy Integration** - RESTful API with automatic Swagger/OpenAPI documentation
 - **Production-Ready** - Designed with Fintech requirements in mind
 - **Scalable** - Ready for deployment in cloud environments
@@ -25,7 +25,7 @@ Credo is a modern, scalable Credit Score API designed specifically for Fintech a
 
 - **Backend Framework**: [FastAPI](https://fastapi.tiangolo.com/)
 - **Python Version**: 3.9+
-- **Database**: (To be specified)
+- **Database**: Sqlite (can be easily switched to PostgreSQL or MySQL)
 - **Deployment**: (To be specified)
 
 ---
@@ -54,30 +54,10 @@ uv sync
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-### Code Quality Tools
-
-This project uses the following tools to maintain code quality:
-
-- **[Ruff](https://docs.astral.sh/ruff/)** - Fast Python linter and formatter
-- **[basedpyright](https://docs.basedpyright.com/latest/)** - Static type checker for Python
-
-Run the following commands to check and format your code:
-
-```bash
-# Lint code
-uv run ruff check .
-
-# Format code
-uv run ruff format .
-
-# Type checking
-uv run basedpyright
-```
-
 ### Start the API
 
 ```bash
-fastapi dev app/main.py
+uv run fastapi dev app/main.py
 ```
 
 ---
@@ -95,13 +75,17 @@ credo/
 │   ├── main.py                  # Application entry point
 │   ├── api/                     # API routes/endpoints
 │   ├── core/                    # Core configuration
-│   ├── crud/                    # Database operations
 │   ├── db/                      # Database setup
-│   └── schemas/                 # Pydantic models
+│   ├── models/                 # Pydantic models
+│   ├── services/                 # Business logic and ML integration
+│   └── enums/                 # Enums datatypes to be used in the database
 ├── ml_engine/                    # Machine Learning module
-    ├── artifacts/               # Saved ML models
+│   ├── artifacts/               # Saved ML models
 │   └── training/
 │       └── data/               # Training datasets
+├── test/                    # Unit and integration tests
+├── data.db                    # Sqlite database file
+├── init_db.py                    # Database initialization script
 ├── pyproject.toml
 └── README.md
 ```
@@ -117,6 +101,7 @@ credo/
 | **Train Initial ML Model** | ✅ Completed | 🔴 High Priority | Develop and train the first TensorFlow model (using Keras) |
 | **Determine ScoreCard Schema** | 🔀 Changed | 🟡 Medium Priority | Changed to more granular schema definition (see Determine Basic Schemas) |
 | **Determine Basic Schemas** | ✅ Completed | 🟡 Medium Priority | Define basic Pydantic schemas for applications and user info |
+| **Implement DataBase** | ✅ Completed | 🔴 High Priority | Implement the database schema and initialization |
 | **Implement API Endpoints** | 🔄 In progress | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
 | **Integrate ML Model with API** | 🔄 In progress | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
 | **Testing & Validation** | ⏳ Planned | 🟢 Low Priority | Implement unit and integration tests for API and ML model |
