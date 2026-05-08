@@ -15,8 +15,9 @@ dist/
 # uv virtual environment
 .uv/
 
-# VS Code settings
+# Code editor settings
 .vscode/
+.zed/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
@@ -26,3 +27,7 @@ dist/
 
 # Virtual environments
 .venv/
+
+# Agent files
+.ai/
+.agents/
