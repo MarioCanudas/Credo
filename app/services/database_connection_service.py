@@ -1,6 +1,7 @@
-import asyncio
 from typing import Optional
 
+# Import tables to register them with SQLModel metadata
+import db  # noqa: F401
 from core import DATABASE_URL
 from pydantic import BaseModel
 from sqlalchemy import Engine, Inspector, inspect
@@ -13,6 +14,7 @@ class _SchemaValidationResult(BaseModel):
     missing_tables: set[str] = set()
     extra_tables: set[str] = set()
     message: str = ""
+    expected_schema: str = ""
 
 
 class DBConnectionService:
@@ -31,22 +33,26 @@ class DBConnectionService:
             self._create_engine()
             DBConnectionService._initialized = True
 
-            engine_validation = asyncio.run(self._validate_schema())
-            if not engine_validation.success:
-                raise Exception(
-                    f"Database schema validation failed: {engine_validation.message}"
-                )
+    def validate_or_raise(self) -> None:
+        engine_validation = self._validate_schema()
+        if not engine_validation.success:
+            expected_schema = (
+                f"\n💡 Expected SQLModel schema:\n{engine_validation.expected_schema}"
+                if engine_validation.expected_schema
+                else ""
+            )
+            raise Exception(f"\n{engine_validation.message}\n{expected_schema}")
 
     def _create_engine(self) -> None:
         if self.engine is None:
             self.engine = create_engine(DATABASE_URL, echo=True)
 
-    async def _validate_schema(self) -> _SchemaValidationResult:
+    def _validate_schema(self) -> _SchemaValidationResult:
         if self.engine is None:
             return _SchemaValidationResult(
                 success=False,
                 is_empty=True,
-                message="Database engine is not initialized.",
+                message="❌ Database engine is not initialized.",
             )
 
         inspector = inspect(self.engine)
@@ -54,44 +60,42 @@ class DBConnectionService:
 
         db_tables = set(inspector.get_table_names())
         expected_tables = set(SQLModel.metadata.tables.keys())
+        expected_schema = self._describe_expected_schema(tables_schema)
 
         missing_tables = expected_tables - db_tables
         extra_tables = db_tables - expected_tables
         is_empty = len(db_tables) == 0
 
         message_parts: list[str] = []
-        if missing_tables:
-            message_parts.append(
-                f"Missing tables: {', '.join(sorted(missing_tables))}."
-            )
-        if extra_tables:
-            message_parts.append(f"Extra tables: {', '.join(sorted(extra_tables))}.")
         if is_empty:
-            message_parts.append("Database is empty.")
+            message_parts.append("⚠️ Database is empty.")
+        else:
+            if missing_tables:
+                tables_list = "\n".join([f"    - {t}" for t in sorted(missing_tables)])
+                message_parts.append(f"❌ Missing tables:\n{tables_list}")
+
+            if extra_tables:
+                tables_list = "\n".join([f"    - {t}" for t in sorted(extra_tables)])
+                message_parts.append(
+                    f"❌ Extra tables found in database:\n{tables_list}"
+                )
 
         table_errors: dict[str, list[str]] = {}
         if not bool(missing_tables):
-            tasks: dict[str, asyncio.Task[list[str]]] = {}
-
-            async with asyncio.TaskGroup() as tg:
-                for table in tables_schema.values():
-                    tasks[table.name] = tg.create_task(
-                        self._verify_table_columns(inspector, table)
-                    )
-
-            for table, task in tasks.items():
-                column_errors = task.result()
+            for table in tables_schema.values():
+                column_errors = self._verify_table_columns(inspector, table)
                 if column_errors:
-                    table_errors[table] = column_errors
+                    table_errors[table.name] = column_errors
 
         if table_errors:
-            table_details: list[str] = []
+            error_details: list[str] = []
             for table, errors in table_errors.items():
-                formatted_errors = ", ".join(errors)
-                table_details.append(f"{table}: {formatted_errors}")
+                formatted_errors = "\n".join([f"      - {e}" for e in errors])
+                error_details.append(f"    Table '{table}':\n{formatted_errors}")
 
-            error_details = "; ".join(table_details)
-            message_parts.append(f"Column errors found in tables: {error_details}.")
+            message_parts.append(
+                f"❌ Column errors found:\n" + "\n".join(error_details)
+            )
 
         success = (
             not is_empty
@@ -105,14 +109,30 @@ class DBConnectionService:
             is_empty=is_empty,
             missing_tables=missing_tables,
             extra_tables=extra_tables,
-            message=" ".join(message_parts),
+            message="\n".join(message_parts),
+            expected_schema=expected_schema,
         )
 
         return result
 
-    async def _verify_table_columns(
-        self, inspector: Inspector, table: Table
-    ) -> list[str]:
+    def _describe_expected_schema(self, tables_schema: dict[str, Table]) -> str:
+        table_descriptions: list[str] = []
+        for table in tables_schema.values():
+            column_descriptions: list[str] = []
+            for column in table.columns:
+                pk_suffix = " (PK)" if column.primary_key else ""
+                column_descriptions.append(
+                    f"    - {column.name}: {column.type}{pk_suffix}"
+                )
+
+            table_header = f"  Table '{table.name}':"
+            table_descriptions.append(
+                f"{table_header}\n" + "\n".join(column_descriptions)
+            )
+
+        return "\n".join(table_descriptions)
+
+    def _verify_table_columns(self, inspector: Inspector, table: Table) -> list[str]:
         expected_schema: dict[str, str] = {}
         for col in table.columns:
             expected_schema[col.name] = str(col.type)

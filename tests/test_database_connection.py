@@ -1,13 +1,19 @@
+import os
 import sys
 
-from ..app.services import DBConnectionService
+# Add the project root to sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "app"))
+
+from app.services import DBConnectionService
 
 
 def test_connection():
     print("Testing database connection and schema validation...")
     try:
         # DBConnectionService validates the schema in its __init__
-        DBConnectionService()
+        db_service = DBConnectionService()
+        db_service.validate_or_raise()
         print(
             "Success: DBConnectionService initialized and schema validated successfully."
         )
