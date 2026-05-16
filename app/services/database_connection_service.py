@@ -21,17 +21,23 @@ class DBConnectionService:
     engine: Engine | None = None
 
     _instance: Optional["DBConnectionService"] = None
-    _initialized: bool = False
 
     def __new__(cls) -> "DBConnectionService":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self) -> None:
-        if not self._initialized:
-            self._create_engine()
-            DBConnectionService._initialized = True
+    def connect(self) -> None:
+        """Initializes the database engine and validates the schema."""
+        if self.engine is None:
+            self.engine = create_engine(DATABASE_URL, echo=True)
+            self.validate_or_raise()
+
+    def disconnect(self) -> None:
+        """Disposes the database engine."""
+        if self.engine is not None:
+            self.engine.dispose()
+            self.engine = None
 
     def validate_or_raise(self) -> None:
         engine_validation = self._validate_schema()
@@ -42,10 +48,6 @@ class DBConnectionService:
                 else ""
             )
             raise Exception(f"\n{engine_validation.message}\n{expected_schema}")
-
-    def _create_engine(self) -> None:
-        if self.engine is None:
-            self.engine = create_engine(DATABASE_URL, echo=True)
 
     def _validate_schema(self) -> _SchemaValidationResult:
         if self.engine is None:
@@ -93,9 +95,7 @@ class DBConnectionService:
                 formatted_errors = "\n".join([f"      - {e}" for e in errors])
                 error_details.append(f"    Table '{table}':\n{formatted_errors}")
 
-            message_parts.append(
-                f"❌ Column errors found:\n" + "\n".join(error_details)
-            )
+            message_parts.append("❌ Column errors found:\n" + "\n".join(error_details))
 
         success = (
             not is_empty

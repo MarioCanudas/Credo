@@ -11,15 +11,18 @@ from app.services import DBConnectionService
 def test_connection():
     print("Testing database connection and schema validation...")
     try:
-        # DBConnectionService validates the schema in its __init__
+        # DBConnectionService now uses connect() to initialize and validate
         db_service = DBConnectionService()
-        db_service.validate_or_raise()
+        db_service.connect()
         print(
-            "Success: DBConnectionService initialized and schema validated successfully."
+            "Success: DBConnectionService connected and schema validated successfully."
         )
     except Exception as e:
-        print(f"Error: Database connection service failed validation: {e}")
+        print(f"Error: Database connection service failed: {e}")
         sys.exit(1)
+    finally:
+        # Always disconnect after testing
+        DBConnectionService().disconnect()
 
 
 if __name__ == "__main__":
