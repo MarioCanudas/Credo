@@ -1,4 +1,4 @@
-from .application_table import ApplicationTable
-from .user_table import UserTable
+from .application_table import Applications
+from .user_table import Users
 
-__all__ = ["UserTable", "ApplicationTable"]
+__all__ = ["Users", "Applications"]
