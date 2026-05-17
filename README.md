@@ -1,9 +1,9 @@
 <div align="center">
-<h1>Credo - Credit Score API</h1>
+<h1>Credo - Credit Score API v1.0.0</h1>
 
 **A FastAPI-based Credit Score Prediction API powered by TensorFlow Machine Learning Models**
 
-[Features](#features) • [Quick Start](#quick-start) • [Roadmap](#roadmap) 
+[Features](#features) • [Quick Start](#quick-start) • [Usage Examples](#usage-examples) • [API Documentation](#api-documentation) • [Roadmap](#roadmap) 
 </div>
 
 ---
@@ -25,15 +25,16 @@ Credo is a modern, scalable Credit Score API designed specifically for Fintech a
 
 - **Backend Framework**: [FastAPI](https://fastapi.tiangolo.com/)
 - **Python Version**: 3.9+
-- **Database**: Sqlite (can be easily switched to PostgreSQL or MySQL)
-- **Deployment**: (To be specified)
+- **Database**: Sqlite (SQLModel)
+- **ML Framework**: TensorFlow / Keras
+- **Package Manager**: [UV](https://docs.astral.sh/uv/)
 
 ---
 
 ## Installation
 
 ### Prerequisites
-- Python 3.9 or higher
+- Python 3.10 or higher
 - [UV](https://docs.astral.sh/uv/) package manager
 
 ### Setup Instructions
@@ -60,11 +61,106 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv run fastapi dev app/main.py
 ```
 
+The API will be available at `http://127.0.0.1:8000`.
+
 ---
 
 ## Quick Start
 
-> 📝 This section will be added in future releases with example requests and API usage documentation.
+Once the API is running, you can start making requests. The typical workflow is:
+1. **Create a User** with their financial profile.
+2. **Submit a Credit Application** for that user to get a prediction.
+
+### 1. Create a User
+```bash
+curl -X POST "http://127.0.0.1:8000/users/" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "gender": "m",
+           "car": true,
+           "realty": true,
+           "cnt_children": 0,
+           "income": 200000,
+           "income_type": "working",
+           "education_type": "higher_education",
+           "fam_status": "married",
+           "housing_type": "house",
+           "mobile_phone": true,
+           "work_phone": true,
+           "phone": true,
+           "email": true,
+           "job_title": "managers",
+           "cnt_fam_members": 2,
+           "age": 35,
+           "work_experience": 10,
+           "bad_debt": 0,
+           "good_debt": 5
+         }'
+```
+
+### 2. Request Credit Prediction
+```bash
+curl -X POST "http://127.0.0.1:8000/applications/" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id": 1}'
+```
+
+---
+
+## API Documentation
+
+Credo provides automatic documentation via Swagger UI. Once the server is running, navigate to:
+
+- **Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+### Core Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/users/` | Create a new user profile |
+| `GET` | `/users/{user_id}` | Retrieve user profile details |
+| `PUT` | `/users/{user_id}` | Update an existing user profile |
+| `DELETE` | `/users/{user_id}` | Delete a user and their data |
+| `POST` | `/applications/` | Submit a credit application (Predicts status) |
+| `GET` | `/applications/{user_id}` | Retrieve the latest application status |
+
+---
+
+## Usage Examples
+
+### Updating User Information
+If a user's income or job status changes, you can update their profile:
+```bash
+curl -X PUT "http://127.0.0.1:8000/users/1" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "gender": "m",
+           "car": true,
+           "realty": true,
+           "cnt_children": 1,
+           "income": 250000,
+           "income_type": "working",
+           "education_type": "higher_education",
+           "fam_status": "married",
+           "housing_type": "house",
+           "mobile_phone": true,
+           "work_phone": true,
+           "phone": true,
+           "email": true,
+           "job_title": "managers",
+           "cnt_fam_members": 3,
+           "age": 36,
+           "work_experience": 11,
+           "bad_debt": 0,
+           "good_debt": 6
+         }'
+```
+
+### Checking Application Status
+```bash
+curl -X GET "http://127.0.0.1:8000/applications/1"
+```
 
 ---
 
@@ -83,9 +179,8 @@ credo/
 │   ├── artifacts/               # Saved ML models
 │   └── training/
 │       └── data/               # Training datasets
-├── test/                    # Unit and integration tests
+├── tests/                    # Unit and integration tests
 ├── data.db                    # Sqlite database file
-├── init_db.py                    # Database initialization script
 ├── pyproject.toml
 └── README.md
 ```
@@ -99,13 +194,12 @@ credo/
 | **Initial Project Setup** | ✅ Completed | 🟢 Low Priority | Basic FastAPI structure with UV setup |
 | **Design Initial ML Model** | ✅ Completed | 🔴 High Priority | Define features and architecture for the credit score model |
 | **Train Initial ML Model** | ✅ Completed | 🔴 High Priority | Develop and train the first TensorFlow model (using Keras) |
-| **Determine ScoreCard Schema** | 🔀 Changed | 🟡 Medium Priority | Changed to more granular schema definition (see Determine Basic Schemas) |
 | **Determine Basic Schemas** | ✅ Completed | 🟡 Medium Priority | Define basic Pydantic schemas for applications and user info |
 | **Implement DataBase** | ✅ Completed | 🔴 High Priority | Implement the database schema and initialization |
-| **Implement API Endpoints** | 🔄 In progress | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
-| **Integrate ML Model with API** | 🔄 In progress | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
-| **Testing & Validation** | ⏳ Planned | 🟢 Low Priority | Implement unit and integration tests for API and ML model |
-| **Documentation & Examples** | ⏳ Planned | 🟡 Medium Priority | Create comprehensive documentation and usage examples |
+| **Implement API Endpoints** | ✅ Completed | 🔴 High Priority | Create the API endpoints to manage petitions and responses |
+| **Integrate ML Model with API** | ✅ Completed | 🔴 High Priority | Connect the trained model to the FastAPI endpoints for inference |
+| **Testing & Validation** | ✅ Completed | 🟢 Low Priority | Implement unit and integration tests for API and ML model |
+| **Documentation & Examples** | ✅ Completed | 🟡 Medium Priority | Create comprehensive documentation and usage examples |
 | **Other fancy features** | ⏳ Planned | 🟢 Low Priority | Additional features |
 
 **Status Legend:**
@@ -118,10 +212,3 @@ credo/
 - 🔴 High Priority
 - 🟡 Medium Priority
 - 🟢 Low Priority
-- 
-
----
-
-## Usage Examples
-
-> 📝 This section will be added in future releases with example requests and API usage documentation.
