@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+from api.routers import applications_router, users_router
 from fastapi import FastAPI
 from services import DBConnectionService
 
@@ -13,3 +14,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(users_router)
+app.include_router(applications_router)
