@@ -38,9 +38,22 @@ class MLService:
 
     def predict_application(self, user: UserBase) -> ApplicationStatus:
         """Predicts the application status based on user information."""
-        # Convert user model to DataFrame for preprocessor
-        user_data = user.model_dump()
+        # Convert user model to DataFrame for preprocessor using JSON mode to get enum values
+        user_data = user.model_dump(mode="json")
         df = pd.DataFrame([user_data])
+
+        # Convert boolean columns to integers for the preprocessor/model
+        binary_columns = [
+            "car",
+            "realty",
+            "mobile_phone",
+            "work_phone",
+            "phone",
+            "email",
+        ]
+        for col in binary_columns:
+            if col in df.columns:
+                df[col] = df[col].astype(int)
 
         # Preprocess data
         processed_data = self.preprocessor.transform(df)

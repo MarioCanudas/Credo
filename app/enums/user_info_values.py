@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Gender(str, Enum):
-    MALE = "male"
-    FEMALE = "female"
+    MALE = "m"
+    FEMALE = "f"
 
 
 class IncomeType(str, Enum):
